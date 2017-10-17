@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+
 /*
  * comment
  */
@@ -15,7 +17,7 @@ public abstract class Person implements java.io.Serializable {
 	private String MiddleName;
 	private String LastName;
 	private String address;
-	private String phone_number;
+	protected String phone_number;
 	private String email_address;
 
 	public String getFirstName() {
@@ -46,11 +48,22 @@ public abstract class Person implements java.io.Serializable {
 		return DOB;
 	}
 
-	public void setDOB(Date DOB){
+/*
+ * Exception for DOB
+ */
+	public void setDOB(Date DOB) throws PersonException{
 		this.DOB = DOB;
+		try {
+			if(!(PrintAge()<100)) {
+				throw new PersonException(this);
+				
+			}
+		}
+			catch (PersonException ex) {
+				throw ex;
+		}
+}
 		
-		
-	}
 
 	public void setAddress(String newAddress) {
 		address = newAddress;
@@ -59,15 +72,36 @@ public abstract class Person implements java.io.Serializable {
 	public String getAddress() {
 		return address;
 	}
-
-	public void setPhone(String newPhone_number) {
-		phone_number = newPhone_number;
 	
+	
+	
+	/*
+	 * Exception for Phone Number
+	 */
+	public void setPhone(String Phone_number) throws PersonException {
+		phone_number = Phone_number;
+		String regex = "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$";
+		Pattern pattern = Pattern.compile(regex);
+		try{
+			Matcher matcher = pattern.matcher(phone_number);
+		    if(!matcher.matches()) {
+		    
+		    throw new PersonException(this);
+		    }
+		    		
+		    
+		}
+		    catch(PersonException e) {
+		    		throw e;
+		    }
 	}
+	
 
+	
 	public String getPhone() {
 		return phone_number;
 	}
+	
 
 	public void setEmail(String newEmail) {
 		email_address = newEmail;
@@ -89,7 +123,7 @@ public abstract class Person implements java.io.Serializable {
 	 */
 
 	public Person(String FirstName, String MiddleName, String LastName,
-			Date DOB, String Address, String Phone_number, String Email)
+			Date DOB, String Address, String Phone_number, String Email) throws PersonException
 	{
 		this.FirstName = FirstName;
 		this.MiddleName = MiddleName;
@@ -101,6 +135,25 @@ public abstract class Person implements java.io.Serializable {
 		
 	}
 
+	/*
+	 *  Exception For Date of Birth
+	 */
+	public Date DOB() throws PersonException{
+		Date DOB=new Date();
+		try {
+			if(PrintAge()>100) {
+				throw new PersonException(this);
+				
+			}
+		}
+			catch (PersonException ex) {
+				throw ex;
+			
+		}
+			return DOB;
+}
+
+	
 	public void PrintName() {
 		System.out.println(this.FirstName + ' ' + this.MiddleName + ' '
 				+ this.LastName);
